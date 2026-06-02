@@ -1,5 +1,5 @@
 from functools import lru_cache
-
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_NEWS_KEYWORDS = [
@@ -28,6 +28,13 @@ class Settings(BaseSettings):
     newsapi_base_url: str = "https://newsapi.org/v2"
     news_fetch_page_size: int = 20
     news_fetch_on_startup: bool = True
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_db_connection(cls, v: str) -> str:
+        if isinstance(v, str) and v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        return v
 
 
 @lru_cache

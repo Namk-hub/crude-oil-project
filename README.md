@@ -28,7 +28,7 @@ Navigate to the backend folder, configure environments, migrate the database, an
 
 ```powershell
 # Go to backend directory
-cd backend/New
+cd backend
 
 # Create & activate virtual environment
 python -m venv .venv
@@ -62,7 +62,7 @@ In a new terminal window, navigate to the frontend directory, install dependenci
 
 ```powershell
 # Go to frontend directory
-cd frontend/tizz/nation-fuel
+cd frontend
 
 # Install node dependencies
 npm install
@@ -81,11 +81,11 @@ To launch the backend and database automatically inside Docker:
 
 ```powershell
 # Start backend and PostgreSQL container
-cd backend/New
+cd backend
 docker-compose up --build
 
 # In a separate terminal, launch the frontend
-cd frontend/tizz/nation-fuel
+cd frontend
 npm install
 npm run dev
 ```
@@ -94,5 +94,5 @@ npm run dev
 
 ## 📁 Directory Layout
 
-* **`backend/New/`**: FastAPI backend (routers, schemas, ORM models, and database migration scripts).
-* **`frontend/tizz/nation-fuel/`**: React (TypeScript) & TanStack Start frontend (UI widgets, charts, and API clients).
+* **`backend/`**: FastAPI backend (routers, schemas, ORM models, and database migration scripts).
+* **`frontend/`**: React (TypeScript) & TanStack Start frontend (UI widgets, charts, and API clients).

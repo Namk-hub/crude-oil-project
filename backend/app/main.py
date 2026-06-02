@@ -54,4 +54,18 @@ def create_app() -> FastAPI:
     return app
 
 
+# Print sanitized DB URL on startup to help debug Render environment configurations
+db_url = settings.database_url
+if "@" in db_url:
+    parts = db_url.split("@", 1)
+    prefix_parts = parts[0].split("://", 1)
+    if len(prefix_parts) == 2 and ":" in prefix_parts[1]:
+        user = prefix_parts[1].split(":", 1)[0]
+        sanitized = f"{prefix_parts[0]}://{user}:***@{parts[1]}"
+        print(f"Database URL configured: {sanitized}")
+    else:
+        print(f"Database URL configured: {db_url}")
+else:
+    print(f"Database URL configured: {db_url}")
+
 app = create_app()

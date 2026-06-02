@@ -1,0 +1,130 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-saffron: var(--saffron);
+  --color-india-green: var(--india-green);
+  --color-navy: var(--navy);
+  --color-surface: var(--surface);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-axis: var(--chart-axis);
+  --color-chart-tooltip-bg: var(--chart-tooltip-bg);
+  --color-chart-tooltip-border: var(--chart-tooltip-border);
+  --color-chart-tooltip-text: var(--chart-tooltip-text);
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* ───── Light Mode (default) ───── */
+/* Palette: Anti-Flash White bg, Bangladesh Green primary, Mountain Meadow accent */
+:root, .light {
+  --radius: 0.75rem;
+  --background: #f5f5f5;
+  --foreground: #0a1f12;
+  --card: #ffffff;
+  --card-foreground: #0a1f12;
+  --popover: #ffffff;
+  --popover-foreground: #0a1f12;
+  --primary: #006B3C;          /* Bangladesh Green */
+  --primary-foreground: #f5f5f5;
+  --secondary: #e8f5ef;
+  --secondary-foreground: #023B1F;
+  --muted: #eef2f0;
+  --muted-foreground: #4b6358;
+  --accent: #d5f5e3;
+  --accent-foreground: #006B3C;
+  --destructive: #dc2626;
+  --destructive-foreground: #fafafa;
+  --border: #d4ddd8;
+  --input: #d4ddd8;
+  --ring: #18BE7A;             /* Mountain Meadow */
+  --success: #18BE7A;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --saffron: #f59e0b;
+  --india-green: #006B3C;
+  --navy: #023B1F;             /* Dark Green */
+  --surface: #fafbfa;
+  /* Chart helpers */
+  --chart-grid: #d4ddd8;
+  --chart-axis: #4b6358;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #d4ddd8;
+  --chart-tooltip-text: #0a1f12;
+}
+
+/* ───── Dark Mode ───── */
+/* Palette: Rich Black bg, Dark Green cards, Caribbean Green primary */
+.dark {
+  --background: #000F08;       /* Rich Black */
+  --foreground: #e8f5ef;
+  --card: #021e11;             /* Between Rich Black & Dark Green */
+  --card-foreground: #e8f5ef;
+  --popover: #021e11;
+  --popover-foreground: #e8f5ef;
+  --primary: #01D87E;          /* Caribbean Green */
+  --primary-foreground: #000F08;
+  --secondary: #023B1F;        /* Dark Green */
+  --secondary-foreground: #e8f5ef;
+  --muted: #021e11;
+  --muted-foreground: #7cb899;
+  --accent: #023B1F;
+  --accent-foreground: #18BE7A; /* Mountain Meadow */
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #064a2a;
+  --input: #064a2a;
+  --ring: #01D87E;
+  --success: #01D87E;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --saffron: #f59e0b;
+  --india-green: #18BE7A;
+  --navy: #000F08;
+  --surface: #011a0e;
+  /* Chart helpers */
+  --chart-grid: #064a2a;
+  --chart-axis: #7cb899;
+  --chart-tooltip-bg: #021e11;
+  --chart-tooltip-border: #064a2a;
+  --chart-tooltip-text: #e8f5ef;
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+}

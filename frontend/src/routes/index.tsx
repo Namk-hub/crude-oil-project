@@ -164,10 +164,11 @@ const supplierData =
 
 const top =
   supplierData.length > 0
-    ? supplierData.reduce((a: any, b: any) =>
-        a.value > b.value ? a : b
-      )
-    : { name: "-", value: 0 };
+    ? [...supplierData].sort(
+        (a: { value: number }, b: { value: number }) =>
+          Number(b.value) - Number(a.value)
+      )[0]
+    : supplierShare.reduce((a, b) => (a.value > b.value ? a : b));
 
 const oilPriceData =
   dashboardData?.recent_oil_prices

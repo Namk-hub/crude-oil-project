@@ -11,15 +11,28 @@ from app.models.oil_price import OilPrice
 from app.models.risk_score import RiskScore
 
 
+def _ensure_russia_is_top_supplier(db: Session) -> None:
+    """Align stored shares with India’s largest crude supplier (Russia)."""
+    russia = db.query(Country).filter(Country.name == "Russia").first()
+    iraq = db.query(Country).filter(Country.name == "Iraq").first()
+    if not russia or not iraq:
+        return
+    if iraq.import_share >= russia.import_share:
+        russia.import_share = 35.0
+        iraq.import_share = 22.0
+        db.commit()
+
+
 def seed(db: Session) -> None:
     if db.query(Country).count() > 0:
+        _ensure_russia_is_top_supplier(db)
         return
 
     countries_data = [
-        {"name": "Iraq", "import_share": 22.5, "geopolitical_score": 78.0},
+        {"name": "Russia", "import_share": 35.0, "geopolitical_score": 82.0},
+        {"name": "Iraq", "import_share": 22.0, "geopolitical_score": 74.0},
         {"name": "Saudi Arabia", "import_share": 18.0, "geopolitical_score": 45.0},
-        {"name": "Russia", "import_share": 15.5, "geopolitical_score": 72.0},
-        {"name": "UAE", "import_share": 12.0, "geopolitical_score": 38.0},
+        {"name": "UAE", "import_share": 12.0, "geopolitical_score": 36.0},
         {"name": "USA", "import_share": 8.5, "geopolitical_score": 25.0},
         {"name": "Nigeria", "import_share": 7.0, "geopolitical_score": 55.0},
         {"name": "Kuwait", "import_share": 6.5, "geopolitical_score": 42.0},

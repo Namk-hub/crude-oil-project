@@ -76,7 +76,7 @@ const sorted = [...(data || [])].sort(
                 {sorted.map((c) => (
                   <tr key={c.id} className="border-b last:border-0 hover:bg-muted/40">
                     <td className="py-4 pr-4 font-medium">{c.country_name}</td>
-                    <td className="py-4 pr-4"><Bar value={c.dependency_score} tone="neutral" /></td>
+                    <td className="py-4 pr-4"><Bar value={c.import_share} tone="neutral" /></td>
                     <td className="py-4 pr-4"><Bar value={c.sentiment_score} tone="warm" /></td>
                     <td className="py-4 pr-4"><Bar value={c.geopolitical_score} tone="danger" /></td>
                     <td className="py-4 pr-4 font-display text-base font-semibold">{c.overall_risk_score}</td>

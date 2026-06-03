@@ -74,7 +74,7 @@ if (!c) {
     country: null,
   };
 }
-  const importShare = c.dependency_score;
+  const importShare = c.import_share;
 
   const gap =
     (TOTAL_IMPORT_MBPD *
@@ -221,7 +221,7 @@ if (error) {
                 <p className="mt-3 font-display text-2xl font-semibold">{result.country?.country_name || "Select Country"}</p>
                 <p className="text-xs text-muted-foreground">
   Import Share:
-  {result.country?.dependency_score || 0}%
+  {result.country?.import_share || 0}%
 </p>
 
 <p className="text-xs text-muted-foreground">

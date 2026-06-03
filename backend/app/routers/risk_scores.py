@@ -35,6 +35,7 @@ def list_risk_scores(
             overall_risk_score=rs.overall_risk_score,
             created_at=rs.created_at,
             country_name=rs.country.name,
+            import_share=rs.country.import_share,
         )
         for rs in scores
     ]

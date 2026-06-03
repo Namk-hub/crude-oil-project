@@ -17,3 +17,5 @@ class RiskScoreRead(BaseModel):
 
 class RiskScoreWithCountryRead(RiskScoreRead):
     country_name: str
+    import_share: float
+

@@ -88,6 +88,7 @@ def get_dashboard(db: Session = Depends(get_db)) -> DashboardResponse:
             overall_risk_score=rs.overall_risk_score,
             created_at=rs.created_at,
             country_name=rs.country.name,
+            import_share=rs.country.import_share,
         )
         for rs in latest_risk_scores
     ]

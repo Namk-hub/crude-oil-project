@@ -31,7 +31,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import { supplierShare } from "@/lib/mock-data";
+import { oilPriceTrend, supplierShare } from "@/lib/mock-data";
 import { useChartColors } from "@/lib/use-chart-colors";
 
 const CHART_COLORS = [
@@ -170,16 +170,59 @@ const top =
       )[0]
     : supplierShare.reduce((a, b) => (a.value > b.value ? a : b));
 
-const oilPriceData =
-  dashboardData?.recent_oil_prices
-    ?.slice()
-    .reverse()
-    .map((p: any) => ({
-      month: new Date(p.date).toLocaleString("default", {
-        month: "short",
-      }),
-      price: p.price,
-    })) || [];
+const oilPriceData = dashboardData?.recent_oil_prices?.length
+  ? dashboardData.recent_oil_prices
+      .slice()
+      .reverse()
+      .map((p: { date: string; price: number }) => {
+        const parts = p.date.split("-");
+        let label = p.date;
+        if (parts.length === 3) {
+          const monthIndex = parseInt(parts[1], 10) - 1;
+          const day = parseInt(parts[2], 10);
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          if (monthIndex >= 0 && monthIndex < 12) {
+            label = `${months[monthIndex]} ${day}`;
+          }
+        } else {
+          const date = new Date(p.date);
+          if (!isNaN(date.getTime())) {
+            const months = [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ];
+            label = `${months[date.getUTCMonth()]} ${date.getUTCDate()}`;
+          }
+        }
+        return {
+          label,
+          price: p.price,
+        };
+      })
+  : oilPriceTrend.map(({ month, price }) => ({ label: month, price }));
 
 const riskChartData =
   dashboardData?.latest_risk_scores?.map((r: any) => ({
@@ -238,9 +281,9 @@ const latestPositiveNews =
             <CardHeader>
               <CardTitle className="text-base">Brent Oil Price Trend (USD/bbl)</CardTitle>
             </CardHeader>
-            <CardContent className="h-72">
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={oilPriceData} margin={{ top: 5, right: 16, left: -8, bottom: 0 }}>
+            <CardContent className="h-[320px] pb-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={oilPriceData} margin={{ top: 5, right: 16, left: -8, bottom: 10 }}>
                   <defs>
                     <linearGradient id="priceLine" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#f59e0b" />
@@ -248,9 +291,23 @@ const latestPositiveNews =
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
-                  <XAxis dataKey="month" stroke={chartColors.axis} fontSize={12} />
+                  <XAxis
+                    dataKey="label"
+                    stroke={chartColors.axis}
+                    fontSize={12}
+                    interval={Math.max(0, Math.floor(oilPriceData.length / 6) - 1)}
+                    tickMargin={8}
+                  />
                   <YAxis stroke={chartColors.axis} fontSize={12} domain={[70, 95]} />
-                  <Tooltip contentStyle={{ borderRadius: 8, border: `1px solid ${chartColors.tooltipBorder}`, backgroundColor: chartColors.tooltipBg, color: chartColors.tooltipText }} />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 8,
+                      border: `1px solid ${chartColors.tooltipBorder}`,
+                      backgroundColor: chartColors.tooltipBg,
+                      color: chartColors.tooltipText,
+                    }}
+                    formatter={(value: number) => [`$${value.toFixed(2)}`, "Price"]}
+                  />
                   <Line
                     type="monotone"
                     dataKey="price"
@@ -325,9 +382,9 @@ const latestPositiveNews =
           <CardHeader>
             <CardTitle className="text-base">Country Risk Scores</CardTitle>
           </CardHeader>
-          <CardContent className="h-72">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={riskChartData} margin={{ top: 5, right: 16, left: -8, bottom: 0 }}>
+          <CardContent className="h-[320px] pb-6">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={riskChartData} margin={{ top: 5, right: 16, left: -8, bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
                 <XAxis dataKey="country" stroke={chartColors.axis} fontSize={11} />
                 <YAxis stroke={chartColors.axis} fontSize={12} />

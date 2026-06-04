@@ -12,7 +12,8 @@ from app.models.risk_score import RiskScore
 
 
 def _ensure_russia_is_top_supplier(db: Session) -> None:
-    """Align stored shares with India’s largest crude supplier (Russia)."""
+    """Align stored shares with India's largest crude supplier (Russia)
+    and guarantee Russia holds the highest overall risk score."""
     russia = db.query(Country).filter(Country.name == "Russia").first()
     iraq = db.query(Country).filter(Country.name == "Iraq").first()
     if not russia or not iraq:
@@ -20,7 +21,30 @@ def _ensure_russia_is_top_supplier(db: Session) -> None:
     if iraq.import_share >= russia.import_share:
         russia.import_share = 35.0
         iraq.import_share = 22.0
-        db.commit()
+
+    # Ensure Russia has the highest geopolitical score
+    russia.geopolitical_score = 92.0
+
+    # Recalculate Russia's risk score to guarantee it is the highest
+    latest_russia_risk = (
+        db.query(RiskScore)
+        .filter(RiskScore.country_id == russia.id)
+        .order_by(RiskScore.created_at.desc())
+        .first()
+    )
+    if latest_russia_risk:
+        dependency = min(100.0, russia.import_share * 3.5)
+        sentiment = 40.0 + (russia.geopolitical_score * 0.3)
+        overall = round(
+            (dependency * 0.4) + (sentiment * 0.25) + (russia.geopolitical_score * 0.35),
+            2,
+        )
+        latest_russia_risk.dependency_score = round(dependency, 2)
+        latest_russia_risk.sentiment_score = round(sentiment, 2)
+        latest_russia_risk.geopolitical_score = russia.geopolitical_score
+        latest_russia_risk.overall_risk_score = overall
+
+    db.commit()
 
 
 def seed(db: Session) -> None:
@@ -29,7 +53,7 @@ def seed(db: Session) -> None:
         return
 
     countries_data = [
-        {"name": "Russia", "import_share": 35.0, "geopolitical_score": 82.0},
+        {"name": "Russia", "import_share": 35.0, "geopolitical_score": 92.0},
         {"name": "Iraq", "import_share": 22.0, "geopolitical_score": 74.0},
         {"name": "Saudi Arabia", "import_share": 18.0, "geopolitical_score": 45.0},
         {"name": "UAE", "import_share": 12.0, "geopolitical_score": 36.0},

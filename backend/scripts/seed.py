@@ -12,37 +12,51 @@ from app.models.risk_score import RiskScore
 
 
 def _ensure_russia_is_top_supplier(db: Session) -> None:
-    """Align stored shares with India's largest crude supplier (Russia)
-    and guarantee Russia holds the highest overall risk score."""
-    russia = db.query(Country).filter(Country.name == "Russia").first()
-    iraq = db.query(Country).filter(Country.name == "Iraq").first()
-    if not russia or not iraq:
-        return
-    if iraq.import_share >= russia.import_share:
-        russia.import_share = 40.0
-        iraq.import_share = 27.0
+    """Align stored shares and risk scores with the latest seed values."""
+    TARGET_SHARES = {
+        "Russia": 40.0,
+        "Iraq": 27.0,
+        "Saudi Arabia": 23.0,
+        "UAE": 18.0,
+        "USA": 14.0,
+        "Nigeria": 12.0,
+        "Kuwait": 10.0,
+        "Iran": 9.0,
+        "Venezuela": 7.0,
+        "Mexico": 5.0,
+    }
+    TARGET_GEO = {
+        "Russia": 92.0,
+    }
 
-    # Ensure Russia has the highest geopolitical score
-    russia.geopolitical_score = 92.0
+    # Update all country import_share and geopolitical_score values
+    for country in db.query(Country).all():
+        if country.name in TARGET_SHARES:
+            country.import_share = TARGET_SHARES[country.name]
+        if country.name in TARGET_GEO:
+            country.geopolitical_score = TARGET_GEO[country.name]
 
-    # Recalculate Russia's risk score to guarantee it is the highest
-    latest_russia_risk = (
-        db.query(RiskScore)
-        .filter(RiskScore.country_id == russia.id)
-        .order_by(RiskScore.created_at.desc())
-        .first()
-    )
-    if latest_russia_risk:
-        dependency = min(100.0, russia.import_share * 3.5)
-        sentiment = 40.0 + (russia.geopolitical_score * 0.3)
-        overall = round(
-            (dependency * 0.4) + (sentiment * 0.25) + (russia.geopolitical_score * 0.35),
-            2,
+    db.flush()
+
+    # Recalculate risk scores for every country
+    for country in db.query(Country).all():
+        latest_risk = (
+            db.query(RiskScore)
+            .filter(RiskScore.country_id == country.id)
+            .order_by(RiskScore.created_at.desc())
+            .first()
         )
-        latest_russia_risk.dependency_score = round(dependency, 2)
-        latest_russia_risk.sentiment_score = round(sentiment, 2)
-        latest_russia_risk.geopolitical_score = russia.geopolitical_score
-        latest_russia_risk.overall_risk_score = overall
+        if latest_risk:
+            dependency = min(100.0, country.import_share * 3.5)
+            sentiment = 40.0 + (country.geopolitical_score * 0.3)
+            overall = round(
+                (dependency * 0.4) + (sentiment * 0.25) + (country.geopolitical_score * 0.35),
+                2,
+            )
+            latest_risk.dependency_score = round(dependency, 2)
+            latest_risk.sentiment_score = round(sentiment, 2)
+            latest_risk.geopolitical_score = country.geopolitical_score
+            latest_risk.overall_risk_score = overall
 
     db.commit()
 

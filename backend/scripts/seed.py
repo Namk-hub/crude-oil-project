@@ -19,8 +19,8 @@ def _ensure_russia_is_top_supplier(db: Session) -> None:
     if not russia or not iraq:
         return
     if iraq.import_share >= russia.import_share:
-        russia.import_share = 35.0
-        iraq.import_share = 22.0
+        russia.import_share = 40.0
+        iraq.import_share = 27.0
 
     # Ensure Russia has the highest geopolitical score
     russia.geopolitical_score = 92.0
@@ -53,16 +53,16 @@ def seed(db: Session) -> None:
         return
 
     countries_data = [
-        {"name": "Russia", "import_share": 35.0, "geopolitical_score": 92.0},
-        {"name": "Iraq", "import_share": 22.0, "geopolitical_score": 74.0},
-        {"name": "Saudi Arabia", "import_share": 18.0, "geopolitical_score": 45.0},
-        {"name": "UAE", "import_share": 12.0, "geopolitical_score": 36.0},
-        {"name": "USA", "import_share": 8.5, "geopolitical_score": 25.0},
-        {"name": "Nigeria", "import_share": 7.0, "geopolitical_score": 55.0},
-        {"name": "Kuwait", "import_share": 6.5, "geopolitical_score": 42.0},
-        {"name": "Iran", "import_share": 5.0, "geopolitical_score": 85.0},
-        {"name": "Venezuela", "import_share": 3.0, "geopolitical_score": 68.0},
-        {"name": "Mexico", "import_share": 2.0, "geopolitical_score": 30.0},
+        {"name": "Russia", "import_share": 40.0, "geopolitical_score": 92.0},
+        {"name": "Iraq", "import_share": 27.0, "geopolitical_score": 74.0},
+        {"name": "Saudi Arabia", "import_share": 23.0, "geopolitical_score": 45.0},
+        {"name": "UAE", "import_share": 18.0, "geopolitical_score": 36.0},
+        {"name": "USA", "import_share": 14.0, "geopolitical_score": 25.0},
+        {"name": "Nigeria", "import_share": 12.0, "geopolitical_score": 55.0},
+        {"name": "Kuwait", "import_share": 10.0, "geopolitical_score": 42.0},
+        {"name": "Iran", "import_share": 9.0, "geopolitical_score": 85.0},
+        {"name": "Venezuela", "import_share": 7.0, "geopolitical_score": 68.0},
+        {"name": "Mexico", "import_share": 5.0, "geopolitical_score": 30.0},
     ]
 
     countries = [Country(**data) for data in countries_data]
